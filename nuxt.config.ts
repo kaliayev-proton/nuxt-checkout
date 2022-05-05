@@ -5,4 +5,8 @@ export default defineNuxtConfig({
   server: {
     port: 5000,
   },
+  modules: ["@nuxt/ui"],
+  publicRuntimeConfig: {
+    BASE_URL: process.env.BASE_URL,
+  },
 });

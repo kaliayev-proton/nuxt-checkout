@@ -1,10 +1,65 @@
+<script lang="ts">
+// const { data } = await useFetch(
+//   `http://localhost:8000/api/checkout/links/${route.params.code}`
+// );
+interface CheckoutResponse {
+  user: { first_name: string; last_name: string };
+}
+export default defineComponent({
+  async asyncData({ params, $http }) {
+    const post = await $http.$get(
+      `http://localhost:8000/api/checkout/links/${params.code}`
+    );
+    return { post };
+  },
+  async setup() {
+    // const route = useRoute();
+    // const data = await this.asyncData()
+    //   console.log("setup");
+    //   console.log(data.value);
+    // },
+    // async mounted() {
+    //   console.log(this.$route.params.code);
+    //   // const { data } = await this.$axios.get(`http://localhost:8000/api/checkout/links/${this.$route.params.code}`);
+    //   // const { data, pending, refresh } = await useLazyFetch(
+    //   //   `http://localhost:8000/api/checkout/links/${this.$route.params.code}`
+    //   // );
+    //   // watch(data, (newPosts) => {
+    //   //   console.log(newPosts);
+    //   //   // Because posts starts out null, you won't have access
+    //   //   // to its contents immediately, but you can watch it.
+    //   // });
+    //   const { data } = await useFetch(
+    //     `http://localhost:8000/api/checkout/links/${this.$route.params.code}`
+    //   );
+    //   console.log(data);
+  },
+});
+</script>
+<script setup lang="ts">
+const config = useRuntimeConfig();
+const route = useRoute();
+// const { data } = await useFetch(
+//   `http://localhost:8000/api/checkout/links/${route.params.code}`
+// );
+
+// useLazyAsyncData allow you to execute the fetch in the backend before return the code to the frontend. That is more optimal for SEO
+const { data }: any = await useLazyAsyncData("data", () =>
+  $fetch(`${config.BASE_URL}/checkout/links/${route.params.code}`)
+);
+</script>
+
 <template>
   <div class="container">
     <main>
       <div class="py-5 text-center">
         <h2>Welcome</h2>
-        <p class="lead">has invited you to buy this products!</p>
+        <p class="lead">
+          {{ data.user.first_name }} {{ data.user.last_name }} has invited you
+          to buy this products!
+        </p>
       </div>
+      {{ data }}
 
       <div class="row g-5">
         <div class="col-md-5 col-lg-4 order-md-last">
@@ -117,11 +172,3 @@
     </main>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  setup() {},
-});
-</script>
